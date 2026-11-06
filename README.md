@@ -1,6 +1,6 @@
-# Radar REC — Automação de testes e vídeos de ERP com IA
+# Radar REC — Vídeos de treinamento e testes de ERP produzidos por IA
 
-> Uma ferramenta que usa um sistema ERP como uma pessoa faria e, a partir disso, **testa funcionalidades** e **produz vídeos narrados de treinamento**, com a IA conduzindo o trabalho do início ao fim.
+> Duas IAs especializadas trabalhando em sequência: a primeira **opera um sistema ERP como uma pessoa faria** para testar funcionalidades e gravar vídeos narrados de treinamento; a segunda **adiciona animações** que ilustram o que a narração explica. O resultado é um vídeo pronto para entrega, sem edição manual.
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Claude Code](https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
@@ -12,51 +12,63 @@
 
 ## O problema
 
-Produzir vídeos de treinamento de um sistema é um trabalho manual e repetitivo: percorrer as telas, gravar, narrar, legendar e editar. Quando o sistema muda ou o texto precisa de ajuste, boa parte do trabalho recomeça.
+Produzir vídeos de treinamento de um sistema é um trabalho manual e repetitivo: percorrer as telas, gravar, narrar, legendar, animar e editar. Quando o sistema muda ou o texto precisa de ajuste, boa parte do trabalho recomeça.
 
 Testar novas funcionalidades segue a mesma lógica: abrir telas, preencher campos e conferir resultados, várias vezes.
 
 ## A ideia
 
-Em vez de uma pessoa operar o sistema e gravar a tela, a **IA conduz uma ferramenta que opera o sistema de verdade**, com o cursor e as telas reais, e entrega o resultado pronto.
+Dividir o trabalho entre **duas IAs, cada uma especialista em uma etapa**, conduzidas por linguagem natural.
 
-A mesma ferramenta atende duas necessidades:
+| IA | Papel | O que entrega |
+| --- | --- | --- |
+| **Radar REC** | Opera o sistema de verdade, com o cursor e as telas reais | Vídeo narrado da aula ou da demonstração, ou o resultado de cada cenário de teste com evidências |
+| **Motion** | Assiste ao vídeo pronto e decide onde uma animação ajuda a explicar | O mesmo vídeo, com animações e textos curtos sincronizados à fala |
 
-| Uso | O que entrega |
-| --- | --- |
-| **Testes** | Executa os cenários de uma funcionalidade e informa, para cada um, se passou ou falhou, com evidências |
-| **Vídeos** | Grava a demonstração ou a aula de uma tela, já com narração, legendas e aproximação nos pontos importantes |
-
-A pessoa descreve o que precisa em linguagem natural, e a IA cuida do restante.
+A pessoa descreve o que precisa, e as IAs cuidam do restante.
 
 ---
 
 ## Como um vídeo é produzido
 
-<p align="center"><img src="docs/fluxo-conceitual.png" alt="Fluxo conceitual de produção de um vídeo" width="380"></p>
+<p align="center"><img src="docs/fluxo-conceitual.png" alt="Fluxo conceitual de produção de um vídeo" width="820"></p>
+
+**Radar REC: a gravação**
 
 1. **Conteúdo.** O texto narrado sai do material didático oficial. Nada é inventado.
 2. **Roteiro.** A IA transforma o conteúdo em um passo a passo no sistema.
 3. **Ensaio.** O roteiro é executado sem gravar, para encontrar problemas antes da gravação.
-4. **Gravação.** O sistema é operado de verdade enquanto a tela é gravada.
-5. **Acabamento.** Narração, legendas, destaque dos cliques, aproximação nas áreas importantes e proteção de dados pessoais.
-6. **Conferência e entrega.** O vídeo é verificado antes de chegar ao cliente.
+4. **Gravação.** O sistema é operado de verdade enquanto a tela é gravada, com narração, destaque dos cliques, aproximação nas áreas importantes e proteção de dados pessoais.
+
+**Motion: as animações**
+
+5. **Leitura do vídeo.** A IA identifica em que momento cada palavra é dita e quando a tela está parada ou em movimento.
+6. **Escolha dos momentos.** Animações entram só quando a narração explica um conceito e a tela não mostra nada importante. Durante cliques, menus e trocas de tela, a tela fala por si.
+7. **Animação.** Textos curtos e ícones surgem no instante da palavra-chave, com o fundo desfocado para dar foco, e somem antes de a tela voltar a se mexer.
+
+**Acabamento**
+
+8. **Legenda e entrega.** A legenda entra por último, para nunca ficar coberta, e o vídeo é conferido antes de chegar ao cliente.
 
 ---
 
 ## Princípios do projeto
 
+- **Cada IA faz uma coisa bem.** Gravar e animar são etapas separadas, com regras próprias, e podem evoluir de forma independente.
 - **Ensaiar antes de gravar.** Erros aparecem no ensaio, não no vídeo pronto.
 - **Conferir o resultado da ação, não só a aparência da tela.** Um teste só passa quando o efeito esperado realmente aconteceu.
 - **Fidelidade ao conteúdo.** Tudo o que a narração diz tem origem no material oficial.
+- **A animação nunca disputa atenção com o sistema.** Ela aparece só nos momentos conceituais, uma ideia por vez, e nunca enquanto algo se move na tela.
+- **O original é preservado.** As animações são uma camada por cima: a voz e a qualidade da imagem continuam exatamente como foram gravadas.
+- **Identidade visual consistente.** Todos os vídeos seguem o mesmo padrão de cores, tipografia e movimento.
 - **Segurança.** Uso apenas em ambiente de demonstração, sem dados reais expostos e com proteção automática de informações pessoais.
-- **Vídeo pensado para quem aprende.** Linguagem de cliente, cursor sempre no assunto e legendas fiéis ao que é dito.
 
 ---
 
 ## Resultados
 
 - **Em uso real:** vídeos de treinamento já entregues para o material didático da empresa.
+- **Do conteúdo ao vídeo final sem edição manual:** gravação, narração, animações e legenda produzidas pelas IAs.
 - **Uma ferramenta, várias demandas:** vídeos de aula, demonstrações de novas funcionalidades e testes.
 - **Padronização:** todos os vídeos seguem a mesma qualidade, independentemente da máquina ou de quem opera.
 - **Transferível:** a documentação permitiu que outra pessoa da equipe passasse a usar a ferramenta.
@@ -65,7 +77,7 @@ A pessoa descreve o que precisa em linguagem natural, e a IA cuida do restante.
 
 ## Competências aplicadas
 
-Automação de processos · Agentes de IA · Python · Automação de interface · Processamento de vídeo · Garantia de qualidade · Documentação técnica
+Automação de processos · Agentes de IA · Orquestração de múltiplas IAs · Python · Automação de interface · Processamento de vídeo · Motion design · Garantia de qualidade · Documentação técnica
 
 ---
 
