@@ -1,4 +1,4 @@
-# Automação de testes e vídeos de ERP com IA
+# Radar REC — Automação de testes e vídeos de ERP com IA
 
 > Uma ferramenta que usa um sistema ERP como uma pessoa faria e, a partir disso, **testa funcionalidades** e **produz vídeos narrados de treinamento**, com a IA conduzindo o trabalho do início ao fim.
 
