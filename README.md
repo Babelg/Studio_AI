@@ -1,6 +1,6 @@
-# Radar REC — Vídeos de treinamento e testes de ERP produzidos por IA
+# Studio AI — Vídeos de treinamento e testes de ERP produzidos por IA
 
-> Duas IAs especializadas trabalhando em sequência: a primeira **opera um sistema ERP como uma pessoa faria** para testar funcionalidades e gravar vídeos narrados de treinamento; a segunda **adiciona animações** que ilustram o que a narração explica. O resultado é um vídeo pronto para entrega, sem edição manual.
+> Um estúdio formado por duas IAs especializadas que trabalham em sequência: a primeira **opera um sistema ERP como uma pessoa faria** para testar funcionalidades e gravar vídeos narrados de treinamento; a segunda **adiciona animações** que ilustram o que a narração explica. O resultado é um vídeo pronto para entrega, sem edição manual.
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Claude Code](https://img.shields.io/badge/Claude_Code-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
@@ -22,7 +22,7 @@ Dividir o trabalho entre **duas IAs, cada uma especialista em uma etapa**, condu
 
 | IA | Papel | O que entrega |
 | --- | --- | --- |
-| **Radar REC** | Opera o sistema de verdade, com o cursor e as telas reais | Vídeo narrado da aula ou da demonstração, ou o resultado de cada cenário de teste com evidências |
+| **REC** | Opera o sistema de verdade, com o cursor e as telas reais | Vídeo narrado da aula ou da demonstração, ou o resultado de cada cenário de teste com evidências |
 | **Motion** | Assiste ao vídeo pronto e decide onde uma animação ajuda a explicar | O mesmo vídeo, com animações e textos curtos sincronizados à fala |
 
 A pessoa descreve o que precisa, e as IAs cuidam do restante.
@@ -33,7 +33,7 @@ A pessoa descreve o que precisa, e as IAs cuidam do restante.
 
 <p align="center"><img src="docs/fluxo-conceitual.png" alt="Fluxo conceitual de produção de um vídeo" width="820"></p>
 
-**Radar REC: a gravação**
+**REC: a gravação**
 
 1. **Conteúdo.** O texto narrado sai do material didático oficial. Nada é inventado.
 2. **Roteiro.** A IA transforma o conteúdo em um passo a passo no sistema.
