@@ -26,40 +26,23 @@ Uma biblioteca em Python que **controla o ERP de verdade**, com o cursor real e 
 
 | Modo | Para quê | Saída |
 | --- | --- | --- |
-| **Regressão** | Executar os cenários de teste de uma funcionalidade quantas vezes for preciso, sem agente | `PASSOU` / `FALHOU` / `BLOQUEADO` por cenário, com JSON e capturas de tela como evidência |
+| **Regressão** | Executar os cenários de teste de uma funcionalidade quantas vezes for preciso, sem agente | Resultado de cada cenário (passou, falhou ou bloqueado), com relatório e capturas de tela como evidência |
 | **Vídeo** | Gravar a demonstração ou a aula de uma tela | MP4 1920x1080 com cursor, marcador de clique, zoom, legenda e narração |
 
-O **Claude Code** opera a ferramenta: lê as regras do projeto (`CLAUDE.md`) e a skill, escreve o roteiro, roda o ensaio, corrige o que falhou, grava e confere a entrega. O usuário conversa em linguagem natural e não precisa digitar comandos.
+O **Claude Code** opera a ferramenta: lê as regras do projeto e a skill, escreve o roteiro, roda o ensaio, corrige o que falhou, grava e confere a entrega. O usuário conversa em linguagem natural e não precisa digitar comandos.
 
 ---
 
 ## Arquitetura
 
-```mermaid
-flowchart LR
-    U([Usuário]) -->|linguagem natural| CC[Claude Code]
-    CC -->|segue| SK[Skill + CLAUDE.md<br/>regras e procedimentos]
-    CC -->|escreve e executa| R[Roteiro Python]
-
-    subgraph LIB [Biblioteca]
-        R --> UI[Controle de telas nativas<br/>pywinauto + Win32 API]
-        R --> WEB[Controle do shell web<br/>Chrome DevTools Protocol]
-        R --> DEMO[Motor de vídeo<br/>câmera, marcador, legenda, desfoque]
-    end
-
-    UI --> ERP[(ERP desktop)]
-    WEB --> ERP
-    DEMO -->|captura 30 fps| FF[FFmpeg]
-    FF --> MP4[[MP4 1080p<br/>+ SRT]]
-    TTS[Voz sintetizada<br/>MP3 + manifesto] --> FF
-```
+<p align="center"><img src="docs/arquitetura.png" alt="Arquitetura da ferramenta" width="900"></p>
 
 ### Desafio central: uma interface híbrida
 
 O ERP mistura duas tecnologias, e cada uma pede uma forma de controle diferente:
 
 - **Shell web (Electron).** Menus, barra lateral e busca. Controlado pelo **Chrome DevTools Protocol** via websocket direto. Bibliotecas como o Playwright não conectavam na versão do Chromium embarcada, então a ferramenta fala o protocolo sem intermediários.
-- **Telas nativas (MFC, 32 bits).** Formulários, grades, abas e diálogos. Controladas com **pywinauto** e chamadas diretas à **Win32 API**, como `PostMessage`, `AttachThreadInput` e `PrintWindow`. Isso exige **Python de 32 bits**, porque um processo de 64 bits não enxerga todos os controles das telas.
+- **Telas nativas (MFC, 32 bits).** Formulários, grades, abas e diálogos. Controladas com **pywinauto** e chamadas diretas à **Win32 API**. Isso exige **Python de 32 bits**, porque um processo de 64 bits não enxerga todos os controles das telas.
 
 Grande parte das ações funciona **por mensagem do Windows, sem mover o mouse**. Assim, os testes rodam mesmo com a janela coberta. No modo vídeo, as mesmas ações viram cliques reais, com o cursor indo até o alvo para quem assiste.
 
@@ -67,19 +50,7 @@ Grande parte das ações funciona **por mensagem do Windows, sem mover o mouse**
 
 ## Pipeline de um vídeo narrado
 
-```mermaid
-flowchart TD
-    A[Material didático<br/>conteúdo + escopo] --> B[Texto da narração<br/>com citação da fonte]
-    B --> C[Voz sintetizada<br/>faixas MP3 + manifesto]
-    C --> D[Roteiro Python]
-    D --> E{Ensaio<br/>sem gravar}
-    E -->|falhou| D
-    E -->|aprovado| F[Gravação 1080p<br/>30 fps]
-    F --> G[Montagem<br/>zoom, legenda, desfoque, cursor]
-    G --> H[Junção da voz]
-    H --> I[Conferência<br/>quadros, duração, legendas]
-    I --> J[[Entrega MP4 + SRT]]
-```
+<p align="center"><img src="docs/pipeline-video.png" alt="Pipeline de um vídeo narrado" width="420"></p>
 
 1. **Narração fiel à fonte.** Cada frase falada sai do material didático, com o trecho de origem anotado. A pergunta "de onde veio isso?" sempre tem resposta.
 2. **Ensaio antes de gravar.** O roteiro percorre o sistema inteiro sem gravar. Ele aponta menu errado, campo não encontrado e silêncios longos na trilha de voz, e salva uma prévia de cada enquadramento de câmera.
@@ -101,15 +72,15 @@ flowchart TD
 
 **Legendas em três formatos.** Imagem composta no vídeo, ASS e SRT (para acessibilidade e plataformas de ensino). Também há um modo que grava sem legenda e a aplica no fim, para quando outra pessoa adiciona animações por cima.
 
-**Diagnóstico de ambiente.** Um comando `verifica` confere Python, pacotes, ERP, porta de depuração, login, escala de tela e se o FFmpeg tem o filtro de captura correto, antes de qualquer gravação.
+**Diagnóstico de ambiente.** Uma verificação automática confere Python, pacotes, ERP, porta de depuração, login, escala de tela e se o FFmpeg tem o filtro de captura correto, antes de qualquer gravação.
 
 ---
 
 ## Decisões de engenharia
 
 - **Verificar o efeito, não o estado.** "A tela abriu" ou "o campo está preenchido" não provam que o passo funcionou, porque o estado podia já estar lá. Os testes conferem a mudança causada pela ação. Essa regra nasceu de um vídeo defeituoso que tinha passado em todas as verificações.
-- **Busca sem resultado é "não encontrado".** Nunca a posição onde a busca parou. Isso evita falsos `PASSOU`.
-- **Falha silenciosa vira checagem explícita.** Uma versão antiga do FFmpeg gravava sem nenhum erro, mas a cerca de 16 fps, e o vídeo saía travado. A troca para captura via Desktop Duplication (`ddagrab`) levou a cerca de 30 fps reais, e o `verifica` passou a acusar o problema antes de gravar.
+- **Busca sem resultado é "não encontrado".** Nunca a posição onde a busca parou. Isso evita falsos positivos.
+- **Falha silenciosa vira checagem explícita.** Uma versão antiga do FFmpeg gravava sem nenhum erro, mas a cerca de 16 fps, e o vídeo saía travado. A troca para captura via Desktop Duplication do Windows levou a cerca de 30 fps reais, e a verificação de ambiente passou a acusar o problema antes de gravar.
 - **Gravar em 1080p nativo.** Torna o resultado igual em qualquer máquina, inclusive por acesso remoto, e foi o que permitiu passar a ferramenta para outra pessoa da equipe.
 - **Segurança inegociável.** A ferramenta nunca digita senha, nunca transmite documento fiscal, só trabalha em base de demonstração e não exclui o que não criou.
 - **Regras com histórico.** Cada regra estranha do projeto está documentada junto com o episódio que a originou. A skill só muda com aprovação humana.
